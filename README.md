@@ -1,157 +1,105 @@
 # Sales_Dashboard
 Automated Power BI dashboard for AtliQ Hardware, offering real-time sales insights to support data-driven decisions. Includes MySQL integration, DAX queries, and visualizations of sales trends, top customers, products, and market performance. Identifies focus areas to boost recovery.
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AtliQ Hardware Sales Insights Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-        }
-        h1, h2, h3 {
-            color: #2c3e50;
-        }
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        code {
-            font-family: Consolas, monospace;
-            color: #e74c3c;
-        }
-        ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h1>AtliQ Hardware Sales Insights Dashboard</h1>
 
-    <h2>Problem Statement</h2>
-    <p>AtliQ Hardware supplies computer hardware and peripherals to clients across India. The Sales Director is facing challenges in tracking sales effectively in a dynamically growing market. Insights provided by regional managers are often verbal, biased, or sugar-coated, leading to frustration and a lack of clarity about the real business performance. While managers share multiple Excel files, analyzing them manually is time-consuming and inefficient.</p>
+## Problem Statement
+AtliQ Hardware is a company that supplies computer hardware and peripherals to many clients across India. The Sales Director of the company is currently facing challenges due to the dynamically growing market. He struggles to track sales performance accurately and obtain actionable insights.
 
-    <h2>Project Planning</h2>
-    <h3>Purpose</h3>
-    <p>To unlock hidden sales insights, automate the process of gathering data, and support the sales team with decision-making using a centralized dashboard.</p>
+The primary issue is that the Sales Director relies on verbal communication with regional managers to gather updates. These conversations often lack clarity, as managers tend to paint overly optimistic pictures of the sales situation. Some managers may unintentionally sugarcoat facts, while others might misreport data.
 
-    <h3>Stakeholders</h3>
-    <ul>
-        <li>Sales Director</li>
-        <li>Marketing Team</li>
-        <li>Customer Service Team</li>
-        <li>Data and Analytics Team</li>
-        <li>IT Team</li>
-    </ul>
+When asked for numerical data, the regional managers share multiple Excel files, which are tedious and time-consuming for the Sales Director to analyze. Frustrated by declining sales and the lack of reliable insights, the Sales Director is looking for a solution that provides a simple, clear, and actionable view of the company’s sales performance. He envisions a dashboard that presents real-time data and enables data-driven decision-making to grow the business.
 
-    <h3>End Result</h3>
-    <p>An automated dashboard that provides quick, up-to-date sales insights to support data-driven decision-making.</p>
+## Project Plan
+### Purpose
+To unlock sales insights that were previously hidden, provide decision support for the sales team, and automate processes to reduce manual time spent on data gathering.
 
-    <h3>Success Criteria</h3>
-    <ul>
-        <li>Dashboard uncovering sales order insights with the latest data available.</li>
-        <li>Sales team enabled to take better decisions and achieve 10% cost savings of total spend.</li>
-        <li>20% reduction in manual data gathering time for sales analysts, enabling them to focus on value-added activities.</li>
-    </ul>
+### Stakeholders
+- Sales Director  
+- Marketing Team  
+- Customer Service Team  
+- Data and Analytics Team  
+- IT Team  
 
-    <h2>Database Information</h2>
-    <h3>Database Used</h3>
-    <p>MySQL</p>
+### End Result
+An automated dashboard providing quick and accurate sales insights to support data-driven decision-making.
 
-    <h3>Tables</h3>
-    <ul>
-        <li><strong>Customers</strong>: Contains <code>Customer_code</code> (Primary Key), <code>customer_name</code>, <code>customer_type</code>.</li>
-        <li><strong>Transactions</strong>: Contains <code>Product_code</code>, <code>market_code</code>, <code>order_date</code>, <code>sales_qty</code>, <code>sales_amount</code>, <code>currency_type</code>.</li>
-        <li><strong>Products</strong>: Contains <code>Product_code</code>, <code>product_type</code> (Own Brand or Outsourced).</li>
-        <li><strong>Markets</strong>: Contains <code>Market_code</code>, <code>Market_name</code> (City Names), <code>zone</code>.</li>
-        <li><strong>Date</strong>: Contains <code>order_date</code>, <code>year</code>, <code>month</code>, <code>month_number</code>.</li>
-    </ul>
+## Success Criteria
+- The dashboard uncovers sales order insights with the latest available data.
+- The sales team can make better decisions, leading to a **10% cost savings** on total spend.
+- Sales analysts save **20% of their time** previously spent on manual data gathering, allowing them to focus on value-added activities.
 
-    <h3>Data Processing</h3>
-    <ul>
-        <li>Focused only on Indian markets by removing data from other countries.</li>
-        <li>Converted all amounts from INR to USD for consistency.</li>
-        <li>Removed zero and negative values from <code>sales_qty</code>.</li>
-    </ul>
+## Data Specifications
+- **Database Used:** MySQL  
+- **Coding Tool:** MySQL Workbench  
 
-    <h2>Dashboard Details</h2>
-    <h3>Tabs</h3>
-    <ul>
-        <li><strong>Overview Tab</strong>: Displays sales amount and quantity by year, top 10 customers, top 10 products, and top 10 cities by sales quantity.</li>
-        <li><strong>Insights Tab</strong>: Shows revenue and sales correlation year-wise and month-wise, along with sales insights by market region and product type.</li>
-        <li><strong>Analysis Tab</strong>: Focuses on the comparison between current year and previous year sales, primarily for the analytics team.</li>
-    </ul>
+### Tables Used:
+#### Customers
+- `Customer_code` (Primary Key)
+- `Customer_name`
+- `Customer_type`
 
-    <h3>DAX Queries Used in Power BI</h3>
-    <pre><code>sales_qty = SUM('sales transactions'[sales_qty])
-Revenue = SUM('sales transactions'[Normalized_USD_Sales_amount])
+#### Transactions
+- `Product_code`
+- `Market_code`
+- `Order_date`
+- `Sales_qty`
+- `Sales_Amount`
+- `Currency_type`
 
-Previous_year_sales = 
-VAR SelectedYear = MAX('sales date'[Year]) 
-VAR Previous__Year = SelectedYear - 1 
-VAR PreviousYearSales =
-    CALCULATE(
-        SUM('sales transactions'[sales_qty]),
-        'sales date'[Year] = Previous__Year
-    )
-RETURN
-    IF (
-        ISBLANK(PreviousYearSales), 
-        "Not Applicable", 
-        PreviousYearSales
-    )
+#### Products
+- `Product_code`
+- `Product_type` (own brand or outsourced)
 
-Previous_year_sales_amount = 
-VAR SelectedYear = MAX('sales date'[Year]) 
-VAR Previous__Year = SelectedYear - 1 
-VAR PreviousYearSales =
-    CALCULATE(
-        SUM('sales transactions'[Normalized_USD_Sales_amount]),
-        'sales date'[Year] = Previous__Year
-    )
-RETURN
-    IF (
-        ISBLANK(PreviousYearSales), 
-        "Not Applicable", 
-        PreviousYearSales
-    )
+#### Markets
+- `Market_code`
+- `Market_name` (city names)
+- `Zone`
 
-YoY_Percentage_Change = 
-VAR SelectedYearSales = [Revenue]
-VAR PreviousYearSales = [Previous_year_sales_amount]
-RETURN
-    IF(
-        NOT(ISBLANK(PreviousYearSales)), 
-        DIVIDE(SelectedYearSales - PreviousYearSales, PreviousYearSales, 0), 
-        BLANK()
-    )
+#### Date
+- `Order_date`
+- `Year`
+- `Month`
+- `Month_number`
 
-YoY_Percentage_Change_QTY = 
-VAR SelectedYearSales = [sales_qty]
-VAR PreviousYearSales = [Previous_year_sales]
-RETURN
-    IF(
-        NOT(ISBLANK(PreviousYearSales)), 
-        DIVIDE(SelectedYearSales - PreviousYearSales, PreviousYearSales, 0), 
-        BLANK()
-    )
-</code></pre>
+## Data Processing
+- Filtered data to focus on the **Indian market** by removing entries from other countries.
+- Converted all sales amounts to **USD** for consistency.
+- Removed **zero and negative values** from `sales_qty` for accurate analysis.
 
-    <h2>Insights</h2>
-    <ul>
-        <li>In 2018, sales peaked at 4.8 million USD but declined steadily afterward.</li>
-        <li>The major decline is attributed to <strong>Product 318</strong>, which dropped from 400k units sold in 2018 to 80k units in 2020, and the <strong>Ahmedabad market</strong>, which fell from 600k units in 2018 to 100k units in 2020.</li>
-        <li>There was an 18% decrease in sales amount and a 25% decrease in sales quantity compared to 2019.</li>
-        <li><strong>Nixon</strong>, the fifth-largest vendor, has gradually reduced purchases. This needs investigation.</li>
-        <li>Sales in Mumbai dropped by 50%, warranting further analysis.</li>
-        <li>Focus areas: Ahmedabad and Mumbai markets, Nixon vendor, and Product 318 to drive sales recovery.</li>
-    </ul>
-</body>
-</html>
+## Dashboard Overview
+The dashboard has three main tabs:
+
+### Overview Tab
+- Displays total sales amount by year, sales quantity by year, top 10 customers, top 10 products, and top 10 cities based on sales quantity.
+
+### Insights Tab
+- Shows the correlation between revenue and sales, both year-wise and month-wise.
+- Breaks down sales amount and quantity by market region and product type.
+
+### Analysis Tab
+- Focused on technical metrics for the analytics team.
+- Includes a year-over-year (YoY) comparison of current-year sales and previous-year sales.
+
+## Key Insights
+### Sales Trends
+- Sales peaked in **2018** at approximately **4.8 million USD** but have shown a steady decline since.
+
+### Top Product Decline
+- **Product 318**, which sold **400,000 units** in **2018**, only sold **80,000 units** in **2020**, significantly contributing to the overall decline.
+
+### Regional Issues
+- **Ahmedabad**, the third-largest market in **2018** (**600,000 units sold**), dropped to just **100,000 units in 2020**.
+- **Mumbai** experienced a **50% sales reduction** in the following year.
+
+### Vendor Concerns
+- **Nixon**, the fifth-largest vendor, has gradually reduced purchases. This issue requires investigation.
+
+### YoY Decline
+- **Sales amount decreased by 18% compared to 2019**.
+- **Sales quantity dropped by 25% compared to 2019**.
+
+## Recommendations
+- Focus on **Ahmedabad** and **Mumbai** markets to recover lost sales.
+- Promote **Product 318** to regain its previous performance.
+- Investigate and address the declining purchases from **Nixon**.
+
+By addressing these areas, the company can achieve a noticeable improvement in sales performance.
